@@ -1,3 +1,0 @@
-C:/CP411/assignments/project/CP411-SnakesAndLadders/cmake-build-debug/CMakeFiles/CP411_SnakesAndLadders.dir
-C:/CP411/assignments/project/CP411-SnakesAndLadders/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/CP411/assignments/project/CP411-SnakesAndLadders/cmake-build-debug/CMakeFiles/rebuild_cache.dir
