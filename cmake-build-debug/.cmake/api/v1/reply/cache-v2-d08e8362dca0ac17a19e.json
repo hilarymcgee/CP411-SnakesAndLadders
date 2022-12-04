@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/CP411/assignments/project/CP411_SnakesAndLadders/cmake-build-debug"
+			"value" : "c:/CP411/assignments/project/CP411-SnakesAndLadders/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -707,7 +707,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/CP411/assignments/project/CP411_SnakesAndLadders"
+			"value" : "C:/CP411/assignments/project/CP411-SnakesAndLadders"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1323,7 +1323,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/CP411/assignments/project/CP411_SnakesAndLadders/cmake-build-debug"
+			"value" : "C:/CP411/assignments/project/CP411-SnakesAndLadders/cmake-build-debug"
 		},
 		{
 			"name" : "CP411_SnakesAndLadders_IS_TOP_LEVEL",
@@ -1347,7 +1347,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/CP411/assignments/project/CP411_SnakesAndLadders"
+			"value" : "C:/CP411/assignments/project/CP411-SnakesAndLadders"
 		}
 	],
 	"kind" : "cache",

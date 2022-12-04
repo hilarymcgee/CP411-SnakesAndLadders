@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "C:/CP411/assignments/project/CP411_SnakesAndLadders/BoardGame/main.cpp" "CMakeFiles/CP411_SnakesAndLadders.dir/BoardGame/main.cpp.obj" "gcc" "CMakeFiles/CP411_SnakesAndLadders.dir/BoardGame/main.cpp.obj.d"
+  "C:/CP411/assignments/project/CP411-SnakesAndLadders/BoardGame/main.cpp" "CMakeFiles/CP411_SnakesAndLadders.dir/BoardGame/main.cpp.obj" "gcc" "CMakeFiles/CP411_SnakesAndLadders.dir/BoardGame/main.cpp.obj.d"
   )
 
 # Targets to which this target links.

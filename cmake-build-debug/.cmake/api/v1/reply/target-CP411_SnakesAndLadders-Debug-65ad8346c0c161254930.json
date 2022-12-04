@@ -61,11 +61,11 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "C:/CP411/assignments/project/CP411_SnakesAndLadders/BoardGame"
+					"path" : "C:/CP411/assignments/project/CP411-SnakesAndLadders/BoardGame"
 				},
 				{
 					"backtrace" : 3,
-					"path" : "C:/CP411/assignments/project/CP411_SnakesAndLadders/images"
+					"path" : "C:/CP411/assignments/project/CP411-SnakesAndLadders/images"
 				}
 			],
 			"language" : "CXX",

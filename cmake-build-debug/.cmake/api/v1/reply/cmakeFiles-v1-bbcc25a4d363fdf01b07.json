@@ -809,8 +809,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "C:/CP411/assignments/project/CP411_SnakesAndLadders/cmake-build-debug",
-		"source" : "C:/CP411/assignments/project/CP411_SnakesAndLadders"
+		"build" : "C:/CP411/assignments/project/CP411-SnakesAndLadders/cmake-build-debug",
+		"source" : "C:/CP411/assignments/project/CP411-SnakesAndLadders"
 	},
 	"version" : 
 	{
