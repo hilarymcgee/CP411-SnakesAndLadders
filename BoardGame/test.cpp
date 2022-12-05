@@ -1,4 +1,3 @@
-#include <windows.h>
 #include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,20 +8,20 @@
 
 #define maxx 10
 #define maxy 10
-#define dx 70
-#define dy 70
-#define x0 350
-#define y2 30
+#define squareWidth 70
+#define squareHeight 70
+#define boardLeftPos 350
+#define boardBottomPos 30
 #define speed 2
 GLfloat squareRightMax[maxx + 1] = {0}, squareBottomMax[maxy + 1] = {0};
 #define DEG2RAD 3.14159 / 180.0
-// GLfloat p1=x0-40,p2=x0-50,p3=x0-40,p4=x0-30,q1=y2+30,q2=y2+40,q3=y2+50,q4=y2+40; // ???
+// GLfloat p1=boardLeftPos-40,p2=boardLeftPos-50,p3=boardLeftPos-40,p4=boardLeftPos-30,q1=boardBottomPos+30,q2=boardBottomPos+40,q3=boardBottomPos+50,q4=boardBottomPos+40; // ???
 
 extern void rect();
 extern void Cylinder_draw();
 extern void cyl();
-class pawns
-{
+
+class pawns {
 private:
 	float p1, p2, p3, p4, q1, q2, q3, q4, oy, m, c, col1;
 	int add, up, tmp, t, flag;
@@ -63,7 +62,11 @@ int selec;
 struct snake sn[4];
 struct ladder l[4];
 
-pawns paw1(x0 - 40, y2 + 40, 1, 70), paw2(x0 - 40, y2 + 10, 0.5, 70);
+pawns paw1(boardLeftPos - 40, boardBottomPos + 40, 1, 70), paw2(boardLeftPos - 40, boardBottomPos + 10, 0.5, 70);
+
+GLfloat vertices[][3] = {{1150.0, 550.0, -50.0}, {1250.0, 550.0, -50.0}, {1250.0, 650.0, -50.0}, {1150.0, 650.0, -50.0}, {1150.0, 550.0, 50.0}, {1250.0, 550.0, 50.0}, {1250.0, 650.0, 50.0}, {1150.0, 650.0, 50.0}};
+GLfloat colors[][3] = {{0.0, 0.0, 0.0}, {1.0, -1.0, -1.0}, {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, {1.0, 1.0, 1.0}, {0.0, 1.0, 1.0}};
+static GLfloat theta[] = {0.0, 0.0, 0.0};
 
 void glutBitmapString(const char *str)
 {
@@ -71,11 +74,9 @@ void glutBitmapString(const char *str)
 	while (str[i] != '\0')
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i++]);
 }
-
-GLfloat vertices[][3] = {{1150.0, 550.0, -50.0}, {1250.0, 550.0, -50.0}, {1250.0, 650.0, -50.0}, {1150.0, 650.0, -50.0}, {1150.0, 550.0, 50.0}, {1250.0, 550.0, 50.0}, {1250.0, 650.0, 50.0}, {1150.0, 650.0, 50.0}};
-GLfloat colors[][3] = {{0.0, 0.0, 0.0}, {1.0, -1.0, -1.0}, {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, {1.0, 1.0, 1.0}, {0.0, 1.0, 1.0}};
-void polygon(int a, int b, int c, int d, int e)
+void polygon(int a, int b, int c, int d, int e) // dice drawer
 {
+	// dice color filler
 	glBegin(GL_POLYGON);
 	glColor3f(1.0, 0.0, 0.0);
 	glVertex3fv(vertices[a]);
@@ -83,6 +84,8 @@ void polygon(int a, int b, int c, int d, int e)
 	glVertex3fv(vertices[c]);
 	glVertex3fv(vertices[d]);
 	glEnd();
+
+	// dice ouline
 	glLineWidth(1.0);
 	glBegin(GL_LINE_LOOP);
 	glColor3f(0.9, 0.0, 0.0);
@@ -91,6 +94,8 @@ void polygon(int a, int b, int c, int d, int e)
 	glVertex3fv(vertices[c]);
 	glVertex3fv(vertices[d]);
 	glEnd();
+
+	// dice numbers as dots
 	glLineWidth(2.0);
 	glColor3f(1.0, 1.0, 1.0);
 	glPointSize(3.0);
@@ -133,22 +138,21 @@ void polygon(int a, int b, int c, int d, int e)
 	}
 	glEnd();
 }
-
-void colorcube(void)
+void colorcube(void) // draw dice sides
 {
-	polygon(0, 3, 2, 1, 1);
-	polygon(2, 3, 7, 6, 2);
-	polygon(0, 4, 7, 3, 3);
-	polygon(1, 2, 6, 5, 4);
-	polygon(4, 5, 6, 7, 5);
-	polygon(0, 1, 5, 4, 6);
+	polygon(0, 3, 2, 1, 1); // front
+	polygon(2, 3, 7, 6, 2); // right
+	polygon(0, 4, 7, 3, 3); // top
+	polygon(1, 2, 6, 5, 4); // bottom
+	polygon(4, 5, 6, 7, 5); // back
+	polygon(0, 1, 5, 4, 6); // left
 }
-
-static GLfloat theta[] = {0.0, 0.0, 0.0};
-
-void DrawEllipse(float radiusX, float radiusY)
+void DrawEllipse(float radiusX, float radiusY) // draw snake head
 {
+	
 	int i;
+
+	// draw snake head ouline
 	glColor3f(51 / 255.0, 153 / 255.0, 255 / 255.0);
 	glBegin(GL_LINE_LOOP);
 	for (i = 0; i < 360; i++)
@@ -157,6 +161,8 @@ void DrawEllipse(float radiusX, float radiusY)
 		glVertex2f(cos(rad) * radiusX, sin(rad) * radiusY);
 	}
 	glEnd();
+
+	// snake head filler
 	glColor3f(172 / 255.0, 200 / 255.0, 255 / 255.0);
 	glBegin(GL_POLYGON);
 	for (i = 0; i < 360; i++)
@@ -166,12 +172,14 @@ void DrawEllipse(float radiusX, float radiusY)
 	}
 	glEnd();
 }
-void Cylinder_draw()
+void Cylinder_draw() // draw snakes
 {
+	// define snake bodies
 	GLfloat xsnake[] = {380, 995, 782, 784}, zsnake[] = {175, 210, 370, 70}, lcarr[] = {0.3, -0.15, 0.30, -0.20, 0.45, -0.15, 0.55, -0.2, 0.70, -0.25, 0.80, -0.35, 0.9};
 	GLfloat i;
 	GLint j, lc = 0, reploop[] = {70, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 25, 70}, snakeLc[] = {13, 7, 6, 5};
-	for (j = 0; j < 4; j++)
+	
+	for (j = 0; j < 4; j++) // draw the four snakes
 	{
 		glColor3f(153 / 256.0, 178 / 256.0, 230 / 256.0);
 		glPointSize(20.0);
@@ -181,6 +189,8 @@ void Cylinder_draw()
 		glVertex3f(xsnake[j], zsnake[j] - 36, 12);
 		glVertex3f(xsnake[j] + 10, zsnake[j] - 10, 12);
 		glEnd();
+
+		// snake body
 		while (lc < snakeLc[j])
 		{
 
@@ -197,14 +207,18 @@ void Cylinder_draw()
 			}
 			lc++;
 		}
+
+		// Full snake head with face
 		glPushMatrix();
 		glTranslatef(xsnake[j], zsnake[j], 18);
 		glColor3f(255 / 255.0, 51 / 255.0, 0);
 		glPointSize(3.0);
+
 		glBegin(GL_POINTS);
 		glVertex3f(-12.5, 7.5, 20);
 		glVertex3f(12.5, 7.5, 20);
 		glEnd();
+
 		glBegin(GL_POLYGON);
 		glVertex3f(0, -1, 20);
 		glVertex3f(-4, -13, 20);
@@ -212,31 +226,32 @@ void Cylinder_draw()
 		glVertex3f(4, -1, 20);
 		glVertex3f(4, -13, 20);
 		glEnd();
+
 		DrawEllipse(25, 15);
 		glPopMatrix();
 	}
 }
-
 void rect() // Board Draw Function
 {
 	// Creates Positional Array? not sure
-	int i, j;
-	squareRightMax[-1] = x0;
-	squareBottomMax[-1] = y2;
+	int i, j, k;
+	squareRightMax[-1] = boardLeftPos;
+	squareBottomMax[-1] = boardBottomPos;
 	for (i = 0; i <= maxx; i++)
-		squareRightMax[i] = x0 + i * dx;
+		squareRightMax[i] = boardLeftPos + i * squareWidth;
 	for (j = 0; j <= maxy; j++)
-		squareBottomMax[j] = y2 + j * dy;
+		squareBottomMax[j] = boardBottomPos + j * squareHeight;
 
 	// Board Background Draw
-	glColor3f(0.88, 0.88, 0.88); // Grey
+	glColor3f(1.000, 0.894, 0.710); // Grey
 	glBegin(GL_QUADS);
-	glVertex3f(x0, 		y2, 	 10);
-	glVertex3f(squareRightMax[maxx], y2, 	 10);
+	glVertex3f(boardLeftPos, 		boardBottomPos, 	 10);
+	glVertex3f(squareRightMax[maxx], boardBottomPos, 	 10);
 	glVertex3f(squareRightMax[maxx], squareBottomMax[maxy], 10);
-	glVertex3f(x0, 		squareBottomMax[maxy], 10);
+	glVertex3f(boardLeftPos, 		squareBottomMax[maxy], 10);
 	glEnd();
 
+	// Draw Tile Numbers and Borders
 	int tileNum = 1;
 	int direction = 1;
 	i = 0;
@@ -244,30 +259,31 @@ void rect() // Board Draw Function
 	{
 		while (1)
 		{
-			if (direction < 0)
+
+			if (direction < 0) 		// if left
 			{
-				if (i < 0)
+				if (i < 0) 			// if left end
 					break;
 			}
-			else
+			else 					// if right
 			{
-				if (i > maxx - 1)
+				if (i > maxx - 1) 	// if right end
 					break;
 			}
 
 			// Square Border Draw
-			glColor3f(0.4, 0.2, 0.0);
+			glColor3f(0.4, 0.2, 0.0); // Brown
 			glBegin(GL_LINE_LOOP);
-			glVertex3f(squareRightMax[i], squareBottomMax[j], 11);
-			glVertex3f(squareRightMax[i], squareBottomMax[j + 1], 11);
-			glVertex3f(squareRightMax[i + direction], squareBottomMax[j + 1], 11);
-			glVertex3f(squareRightMax[i + direction], squareBottomMax[j], 11);
+			glVertex3f(squareRightMax[i				], squareBottomMax[j		], 11);
+			glVertex3f(squareRightMax[i				], squareBottomMax[j + 1	], 11);
+			glVertex3f(squareRightMax[i + direction	], squareBottomMax[j + 1	], 11);
+			glVertex3f(squareRightMax[i + direction	], squareBottomMax[j		], 11);
 			glEnd();
 
-			// glColor3f(0.50 / (i + j / 2.0), 1.0 / (i + j), 1.0 / (i - j));
-			glColor3f(0.0, 0.0, 0.0);
+			// Tile Number Draw
+			glColor3f(0.0, 0.0, 0.0); // Blacks
 			glRasterPos3f(squareRightMax[i] + 10, squareBottomMax[j] + 10, 20);
-			int k = 0;
+			k = 0;
 			sprintf(mess, "%d", tileNum);
 			if (tileNum == 100)
 				strcpy(mess, "END");
@@ -275,24 +291,28 @@ void rect() // Board Draw Function
 			tileNum++;
 			i += direction;
 		}
-		if (direction > 0)
+
+		if (direction > 0) 	// If going right, go left
 		{
 			direction = -1;
 		}
-		else
+		else 				// If going left, go right
 		{
 			direction = 1;
 		}
-		i += direction;
+
+		i += direction; 	// go next tile
 	}
 }
-GLfloat kingf(GLfloat x, GLfloat m, GLfloat k)
+GLfloat mxB(GLfloat x, GLfloat m, GLfloat k) // returns y value of a line
 {
 	return (m * x + k);
 }
-void ltorladder(GLint a, GLint b, GLint c, GLint d)
+void ltorladder(GLint a, GLint b, GLint c, GLint d) // left to right ladder
 {
 	glBegin(GL_QUADS);
+
+	// Ladder Side Beams
 	glVertex3f(squareRightMax[a] + 27, squareBottomMax[b] + 23, 15);
 	glVertex3f(squareRightMax[a] + 30, squareBottomMax[b] + 18, 15);
 	glVertex3f(squareRightMax[c] + 50, squareBottomMax[d] + 10, 15);
@@ -301,25 +321,30 @@ void ltorladder(GLint a, GLint b, GLint c, GLint d)
 	glVertex3f(squareRightMax[a] + 6, squareBottomMax[b] + 42, 15);
 	glVertex3f(squareRightMax[c] + 26, squareBottomMax[d] + 34, 15);
 	glVertex3f(squareRightMax[c] + 23, squareBottomMax[d] + 39, 15);
+
+	// draw ladder rungs
 	GLfloat xi = squareRightMax[a] + 27;
 	int d1 = 8, d2 = 13;
 	GLfloat m = (squareBottomMax[b] + 23.0 - (squareBottomMax[d] + 15.0)) / (squareRightMax[a] + 27.0 - (squareRightMax[c] + 47.0));
 	GLfloat k = squareBottomMax[b] + 23.0 - (m * (squareRightMax[a] + 27.0));
+
 	while (((squareRightMax[c] + 47) - (xi + d1)) > 8)
 	{
-		glVertex3f(xi + d1, kingf(xi + d1, m, k), 16);
-		glVertex3f(xi + d2, kingf(xi + d2, m, k), 16);
-		glVertex3f(xi - 24 + d2, kingf(xi + d2, m, k) + 24, 16);
-		glVertex3f(xi - 24 + d1, kingf(xi + d1, m, k) + 24, 16);
+		glVertex3f(xi + d1, mxB(xi + d1, m, k), 16);
+		glVertex3f(xi + d2, mxB(xi + d2, m, k), 16);
+		glVertex3f(xi - 24 + d2, mxB(xi + d2, m, k) + 24, 16);
+		glVertex3f(xi - 24 + d1, mxB(xi + d1, m, k) + 24, 16);
 		d1 += 15;
 		d2 += 15;
 	}
+
 	glEnd();
 }
-
-void rtolladder(GLint a, GLint b, GLint c, GLint d)
+void rtolladder(GLint a, GLint b, GLint c, GLint d) // right to left ladder
 {
 	glBegin(GL_QUADS);
+
+	// Ladder Side Beams
 	glVertex3f(squareRightMax[a] + 6, squareBottomMax[b] + 32, 15);
 	glVertex3f(squareRightMax[a] + 9, squareBottomMax[b] + 37, 15);
 	glVertex3f(squareRightMax[c] + 29, squareBottomMax[d] + 29, 15);
@@ -328,23 +353,25 @@ void rtolladder(GLint a, GLint b, GLint c, GLint d)
 	glVertex3f(squareRightMax[a] + 9 + 24, squareBottomMax[b] + 37 + 24, 15);
 	glVertex3f(squareRightMax[c] + 29 + 24, squareBottomMax[d] + 29 + 24, 15);
 	glVertex3f(squareRightMax[c] + 26 + 24, squareBottomMax[d] + 24 + 24, 15);
+
+	// draw ladder rungs
 	GLfloat xi = squareRightMax[c] + 26;
 	int d1 = 8, d2 = 13;
 	GLfloat m = (squareBottomMax[b] + 32.0 - (squareBottomMax[d] + 24.0)) / (squareRightMax[a] + 6.0 - (squareRightMax[c] + 26.0));
 	GLfloat k = squareBottomMax[b] + 32.0 - (m * (squareRightMax[a] + 6.0));
 	while (((squareRightMax[a] + 6) - (xi + d1)) > 8)
 	{
-		glVertex3f(xi + d1, kingf(xi + d1, m, k), 16);
-		glVertex3f(xi + d2, kingf(xi + d2, m, k), 16);
-		glVertex3f(xi + d2 + 24, kingf(xi + d2, m, k) + 24, 16);
-		glVertex3f(xi + d1 + 24, kingf(xi + d1, m, k) + 24, 16);
+		glVertex3f(xi + d1, mxB(xi + d1, m, k), 16);
+		glVertex3f(xi + d2, mxB(xi + d2, m, k), 16);
+		glVertex3f(xi + d2 + 24, mxB(xi + d2, m, k) + 24, 16);
+		glVertex3f(xi + d1 + 24, mxB(xi + d1, m, k) + 24, 16);
 		d1 += 15;
 		d2 += 15;
 	}
+
 	glEnd();
 }
-
-void ladders()
+void ladders() // draws ladders
 {
 	GLfloat m;
 	glPointSize(20.0);
@@ -388,7 +415,6 @@ void ladders()
 	sn[2].xp = 6, sn[2].yp = 8, sn[2].xq = 6, sn[2].yq = 4;
 	sn[3].xp = 8, sn[3].yp = 6, sn[3].xq = 9, sn[3].yq = 2;
 }
-
 void display3() // Winner Screen
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -460,7 +486,7 @@ void display2() // Gameply Screen
 	int i;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(1.0, 1.0, 0.8, 1.0);
+	glClearColor(1.0, 1.0, 0.8, 1.0); // Background Color "Yellow"
 
 	// Display Dice
 	glPushMatrix();
@@ -537,8 +563,8 @@ void display2() // Gameply Screen
 	ladders();
 	glColor3f(0.4, 0.2, 0.0);
 	glBegin(GL_QUADS);
-	glVertex3f(x0 + 20, squareBottomMax[maxy] + 20, 0);
-	glVertex3f(x0, squareBottomMax[maxy], 10);
+	glVertex3f(boardLeftPos + 20, squareBottomMax[maxy] + 20, 0);
+	glVertex3f(boardLeftPos, squareBottomMax[maxy], 10);
 	glVertex3f(squareRightMax[maxx], squareBottomMax[maxy], 10);
 	glVertex3f(squareRightMax[maxx] + 20, squareBottomMax[maxy] + 20, 0);
 	glEnd();
@@ -547,14 +573,14 @@ void display2() // Gameply Screen
 	glBegin(GL_QUADS);
 	glVertex3f(squareRightMax[maxx], squareBottomMax[maxy], 10);
 	glVertex3f(squareRightMax[maxx] + 20, squareBottomMax[maxy] + 20, 0);
-	glVertex3f(squareRightMax[maxx] + 20, y2 + 20, 0);
-	glVertex3f(squareRightMax[maxx], y2, 10);
+	glVertex3f(squareRightMax[maxx] + 20, boardBottomPos + 20, 0);
+	glVertex3f(squareRightMax[maxx], boardBottomPos, 10);
 	glEnd();
 
 	Cylinder_draw();
 	glutSwapBuffers();
 }
-pawns::pawns(GLfloat p1, GLfloat q1, GLfloat col, GLint tmp)
+pawns::pawns(GLfloat p1, GLfloat q1, GLfloat col, GLint tmp) // Pawn Constructor
 {
 	add = speed, up = 0, flag = 1;
 	this->p1 = p1;
@@ -566,10 +592,10 @@ pawns::pawns(GLfloat p1, GLfloat q1, GLfloat col, GLint tmp)
 	this->q3 = q1 + 20;
 	this->q4 = q1 + 10;
 	this->col1 = col;
-	oy = q1 - y2;
+	oy = q1 - boardBottomPos;
 	this->tmp = tmp;
 }
-void pawns::disp()
+void pawns::disp() // Pawn Display
 {
 	glColor3f(col1, 1.0, 0.0);
 	glBegin(GL_POLYGON);
@@ -588,7 +614,7 @@ void IR3(int i)
 	else
 		paw2.tryy(i);
 }
-float snlf(float y, float m, float c)
+float snlf(float y, float m, float c) // (y-c)/m
 {
 	return (y - c) / m;
 }
@@ -599,7 +625,7 @@ void IR4(int i)
 	else
 		paw2.try2(i);
 }
-void pawns::tryy(int i)
+void pawns::tryy(int i) // Check against ladders?
 {
 	mt = 0;
 	if ((l[i].yq * 70.0 + 30 + oy) > q1)
@@ -618,7 +644,7 @@ void pawns::tryy(int i)
 	else
 		mt = 1;
 }
-void pawns::try2(int i)
+void pawns::try2(int i) // Check against snakes?
 {
 	mt = 0;
 	if ((sn[i].yq * 70 + 30 + oy) < q1)
@@ -640,7 +666,7 @@ void pawns::try2(int i)
 	else
 		mt = 1;
 }
-void pawns::check()
+void pawns::check() // Check for special movement
 {
 	int a = (p1 - 350) / 70;
 	int b = (q1 - 30) / 70, i;
@@ -649,8 +675,8 @@ void pawns::check()
 		if (a == l[i].xp && b == l[i].yp)
 		{
 
-			m = (l[i].yp * 70.0 + y2 + oy - (l[i].yq * 70.0 + y2 + oy)) / (l[i].xp * 70.0 + x0 + 30 - (l[i].xq * 70.0 + x0 + 30));
-			c = (l[i].yp * 70.0 + y2 + oy - (m * (l[i].xp * 70.0 + x0 + 30)));
+			m = (l[i].yp * 70.0 + boardBottomPos + oy - (l[i].yq * 70.0 + boardBottomPos + oy)) / (l[i].xp * 70.0 + boardLeftPos + 30 - (l[i].xq * 70.0 + boardLeftPos + 30));
+			c = (l[i].yp * 70.0 + boardBottomPos + oy - (m * (l[i].xp * 70.0 + boardLeftPos + 30)));
 			this->tryy(i);
 			if (((l[i].yq - l[i].yp) % 2))
 			{
@@ -666,8 +692,8 @@ void pawns::check()
 			if (sn[i].xp == sn[i].xq)
 				m = 0;
 			else
-				m = (sn[i].yp * 70.0 + y2 + oy - (sn[i].yq * 70.0 + y2 + oy)) / (sn[i].xp * 70.0 + x0 + 30 - (sn[i].xq * 70.0 + x0 + 30));
-			c = (sn[i].yp * 70.0 + y2 + oy - (m * (sn[i].xp * 70.0 + x0 + 30)));
+				m = (sn[i].yp * 70.0 + boardBottomPos + oy - (sn[i].yq * 70.0 + boardBottomPos + oy)) / (sn[i].xp * 70.0 + boardLeftPos + 30 - (sn[i].xq * 70.0 + boardLeftPos + 30));
+			c = (sn[i].yp * 70.0 + boardBottomPos + oy - (m * (sn[i].xp * 70.0 + boardLeftPos + 30)));
 			this->try2(i);
 			if ((sn[i].yq - sn[i].yp) % 2)
 			{
@@ -678,7 +704,7 @@ void pawns::check()
 	}
 	mt = 1;
 }
-int spincube()
+int spincube() // Spin the cube
 {
 	theta[0] += 12;
 	if (theta[0] > 360.0)
@@ -724,14 +750,14 @@ int spincube()
 	}
 	return 0;
 }
-void IR2(int a)
+void IR2(int a) // Update y of current pawn
 {
 	if (alt == 0)
 		paw1.updatey();
 	else
 		paw2.updatey();
 }
-void pawns::updatey()
+void pawns::updatey() // Update y of current pawn
 {
 	if (tmp && t)
 	{
@@ -753,7 +779,7 @@ void pawns::updatey()
 	}
 	up = 0;
 }
-void pawns::init(int r)
+void pawns::init(int r) // Initialize the pawn
 {
 	this->t = r;
 }
@@ -905,7 +931,7 @@ void ir4(int a)
 	glClearColor(0.0, 1.0, 1.0, 1.0);
 	glutPostRedisplay();
 }
-int pawns::check100()
+int pawns::check100() // check if pawn is in the last position
 {
 	int a = (p1 - 350) / 70;
 	int b = (q1 - 30) / 70;
@@ -927,7 +953,7 @@ int pawns::check100()
 	}
 	return 0;
 }
-void myReshape(int w, int h)
+void myReshape(int w, int h) // glut resize window function
 {
 	width = w;
 	height = h;
