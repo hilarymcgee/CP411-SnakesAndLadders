@@ -78,7 +78,7 @@ void polygon(int a, int b, int c, int d, int e) // dice drawer
 {
 	// dice color filler
 	glBegin(GL_POLYGON);
-	glColor3f(1.0, 0.0, 0.0);
+	glColor3f(1.000, 0.753, 0.796);
 	glVertex3fv(vertices[a]);
 	glVertex3fv(vertices[b]);
 	glVertex3fv(vertices[c]);
@@ -88,7 +88,7 @@ void polygon(int a, int b, int c, int d, int e) // dice drawer
 	// dice ouline
 	glLineWidth(1.0);
 	glBegin(GL_LINE_LOOP);
-	glColor3f(0.9, 0.0, 0.0);
+	glColor3f(1.000, 0.412, 0.706);
 	glVertex3fv(vertices[a]);
 	glVertex3fv(vertices[b]);
 	glVertex3fv(vertices[c]);
@@ -103,7 +103,7 @@ void polygon(int a, int b, int c, int d, int e) // dice drawer
 	switch (e)
 	{
 	case 1:
-		glVertex3f(1200.0, 600.0, -50.0);
+		glVertex3f(1.000, 0.894, 0.882);
 		break;
 	case 2:
 		glVertex3f(1175.0, 651.0, 25.0);
@@ -153,7 +153,7 @@ void DrawEllipse(float radiusX, float radiusY) // draw snake head
 	int i;
 
 	// draw snake head ouline
-	glColor3f(51 / 255.0, 153 / 255.0, 255 / 255.0);
+	glColor3f(0.196, 0.804, 0.196);
 	glBegin(GL_LINE_LOOP);
 	for (i = 0; i < 360; i++)
 	{
@@ -163,7 +163,7 @@ void DrawEllipse(float radiusX, float radiusY) // draw snake head
 	glEnd();
 
 	// snake head filler
-	glColor3f(172 / 255.0, 200 / 255.0, 255 / 255.0);
+	glColor3f(0.196, 0.804, 0.196);
 	glBegin(GL_POLYGON);
 	for (i = 0; i < 360; i++)
 	{
@@ -181,7 +181,7 @@ void Cylinder_draw() // draw snakes
 	
 	for (j = 0; j < 4; j++) // draw the four snakes
 	{
-		glColor3f(153 / 256.0, 178 / 256.0, 230 / 256.0);
+		glColor3f(0.196, 0.804, 0.196);
 		glPointSize(20.0);
 		lc = 0;
 		glBegin(GL_TRIANGLES);
@@ -211,7 +211,7 @@ void Cylinder_draw() // draw snakes
 		// Full snake head with face
 		glPushMatrix();
 		glTranslatef(xsnake[j], zsnake[j], 18);
-		glColor3f(255 / 255.0, 51 / 255.0, 0);
+		glColor3f( 	0.000, 0.000, 0.000);
 		glPointSize(3.0);
 
 		glBegin(GL_POINTS);
@@ -272,7 +272,7 @@ void rect() // Board Draw Function
 			}
 
 			// Square Border Draw
-			glColor3f(0.4, 0.2, 0.0); // Brown
+			glColor3f(0.333, 0.420, 0.184);
 			glBegin(GL_LINE_LOOP);
 			glVertex3f(squareRightMax[i				], squareBottomMax[j		], 11);
 			glVertex3f(squareRightMax[i				], squareBottomMax[j + 1	], 11);
@@ -281,7 +281,7 @@ void rect() // Board Draw Function
 			glEnd();
 
 			// Tile Number Draw
-			glColor3f(0.0, 0.0, 0.0); // Blacks
+			glColor3f(1.000, 1.000, 1.000);
 			glRasterPos3f(squareRightMax[i] + 10, squareBottomMax[j] + 10, 20);
 			k = 0;
 			sprintf(mess, "%d", tileNum);
@@ -375,7 +375,7 @@ void ladders() // draws ladders
 {
 	GLfloat m;
 	glPointSize(20.0);
-	glColor3f(171.0 / 256, 155.0 / 256, 138.0 / 256);
+	glColor3f(0.647, 0.165, 0.165);
 
 	switch (selec)
 	{
@@ -420,7 +420,7 @@ void display3() // Winner Screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 1.0, 1.0, 1.0);
 	int i;
-	glColor3f(1.0, 0.0, 0.0);
+	glColor3f(0.333, 0.420, 0.184);
 	glRasterPos3f(600, 380, 10);
 	if (alt == 0)
 		glutBitmapString("PLAYER 1 WINS");
@@ -435,7 +435,7 @@ void display1() // Intro Screen
 	int i;
 
 	// Text Color
-	glColor3f(1.0, 0.0, 0.0);
+	glColor3f(0.333, 0.420, 0.184);
 
 	// Text Position and Name
 	glRasterPos3f(400, 700, 10);
@@ -456,16 +456,16 @@ void display1() // Intro Screen
 	glutBitmapString("UNDER THE GUIDANCE OF : Mr.SHANKAR R");
 
 	// "NEXT" button Border
-	glColor3f(0.0, 0.0, 0.0);
-	glBegin(GL_LINE_LOOP);
-	glVertex3f(615.0, 100.0, 10.0);
-	glVertex3f(615.0, 140.0, 10.0);
-	glVertex3f(710.0, 140.0, 10.0);
-	glVertex3f(710.0, 100.0, 10.0);
-	glEnd();
+//	glColor3f(1.000, 0.000, 0.000);
+//	glBegin(GL_LINE_LOOP);
+//	glVertex3f(615.0, 100.0, 10.0);
+//	glVertex3f(615.0, 140.0, 10.0);
+//	glVertex3f(710.0, 140.0, 10.0);
+//	glVertex3f(710.0, 100.0, 10.0);
+//	glEnd();
 
 	// "NEXT" button Color "Light Grey" Background
-	glColor3f(0.82, 0.82, 0.82);
+	glColor3f(1.000, 0.000, 0.000);
 	glBegin(GL_QUADS);
 	glVertex3f(615.0, 100.0, 9.0);
 	glVertex3f(615.0, 140.0, 9.0);
@@ -474,7 +474,7 @@ void display1() // Intro Screen
 	glEnd();
 
 	// "NEXT" button Text
-	glColor3f(1.0, 0.0, 0.0);
+	glColor3f(1.000, 1.000, 0.000);
 	glRasterPos3f(630, 110, 10.0);
 	glutBitmapString("NEXT");
 
@@ -503,7 +503,7 @@ void display2() // Gameply Screen
 	glFlush();
 
 	// Display Player 1 and Player 2
-	glColor3f(0.4, 0.2, 0.0); // ??
+	glColor3f(0.333, 0.420, 0.184); // WHAT DOES THIS DO? DOES NOTHING
 	paw1.disp();
 	paw2.disp();
 
@@ -520,7 +520,7 @@ void display2() // Gameply Screen
 	glutBitmapString("PLAYER 2 : ");
 
 	// Player 1 Icon Display
-	glColor3f(1.0, 1.0, 0.0);
+	glColor3f(1.000, 0.078, 0.576);
 	glBegin(GL_QUADS);
 	glVertex3f(200.0, 600.0, 20.0);
 	glVertex3f(210.0, 610.0, 20.0);
@@ -529,7 +529,7 @@ void display2() // Gameply Screen
 	glEnd();
 
 	// Player 2 Icon Display
-	glColor3f(0.5, 1.0, 0.0);
+	glColor3f(0.000, 0.000, 0.804);
 	glBegin(GL_QUADS);
 	glVertex3f(200.0, 550.0, 20.0);
 	glVertex3f(210.0, 560.0, 20.0);
