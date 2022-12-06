@@ -97,7 +97,7 @@ void glutBitmapString(const char *str) {
 void polygon(int a, int b, int c, int d, int e) { // dice drawer
 	// dice color filler
 	glBegin(GL_POLYGON);
-	glColor3f(1.000, 0.753, 0.796);
+	glColor3f(0.255, 0.412, 0.882);
 	glVertex3fv(vertices[a]);
 	glVertex3fv(vertices[b]);
 	glVertex3fv(vertices[c]);
@@ -107,7 +107,7 @@ void polygon(int a, int b, int c, int d, int e) { // dice drawer
 	// dice ouline
 	glLineWidth(1.0);
 	glBegin(GL_LINE_LOOP);
-	glColor3f(1.000, 0.412, 0.706);
+	glColor3f(0.000, 0.000, 0.545);
 	glVertex3fv(vertices[a]);
 	glVertex3fv(vertices[b]);
 	glVertex3fv(vertices[c]);
@@ -117,7 +117,7 @@ void polygon(int a, int b, int c, int d, int e) { // dice drawer
 	// dice numbers as dots
 	glLineWidth(2.0);
 	glColor3f(1, 1, 1); // dice dot colors
-	glPointSize(6.0);
+	glPointSize(10.0);
 	glBegin(GL_POINTS);
 	switch (e)
 	{
@@ -389,7 +389,7 @@ void game_screen() // Gameply Screen
 	int i;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(1.0, 1.0, 0.8, 1.0); // Background Color "Yellow"
+	glClearColor(0.902, 0.902, 0.980, 1.0); // Background Color "Yellow"
 
 	// Display Dice
 	glPushMatrix();
