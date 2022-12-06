@@ -434,10 +434,12 @@ void game_screen() // Gameply Screen
 
 
     // Display Creator
-    glRasterPos3f(50.0, 50.0, 20.0);
+    glRasterPos3f(50.0, 70.0, 20.0);
     glutBitmapString("Created by: ");
-    glRasterPos3f(50.0, 30.0, 20.0);
+    glRasterPos3f(50.0, 45.0, 20.0);
     glutBitmapString("Hilary McGee");
+    glRasterPos3f(50.0, 20, 20.0);
+    glutBitmapString("Adam Gerrish");
 
 	// Display Player 1 and Player 2
 	glRasterPos3f(50.0, 600.0, 20.0);
