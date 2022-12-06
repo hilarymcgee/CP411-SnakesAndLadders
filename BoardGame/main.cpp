@@ -51,6 +51,16 @@ int selec;
 
 static GLfloat theta[] = {0.0, 0.0, 0.0};
 
+const GLfloat light_ambient[]  = { 0.0f, 0.0f, 0.0f, 1.0f };
+const GLfloat light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 1.0f };
+const GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+const GLfloat light_position[] = { 2.0f, 5.0f, 5.0f, 0.0f };
+
+const GLfloat mat_ambient[]    = { 0.7f, 0.7f, 0.7f, 1.0f };
+const GLfloat mat_diffuse[]    = { 0.8f, 0.8f, 0.8f, 1.0f };
+const GLfloat mat_specular[]   = { 1.0f, 1.0f, 1.0f, 1.0f };
+const GLfloat high_shininess[] = { 100.0f };
+
 GLfloat vertices[][3] = {
     {1150.0, 550.0, -50.0}, 
     {1250.0, 550.0, -50.0}, 
@@ -155,6 +165,22 @@ void colorcube(void) { // draw dice sides
 	polygon(4, 5, 6, 7, 5); // back
 	polygon(0, 1, 5, 4, 6); // left
 }
+void DrawCircle(float cx, float cy, float r, int num_segments, int z)
+{
+    glBegin(GL_LINE_LOOP);
+    for(int ii = 0; ii < num_segments; ii++)
+    {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments); //get the current angle
+
+        float x = r * cosf(theta); //calculate the x component
+        float y = r * sinf(theta); //calculate the y component
+
+        glVertex3f(x + cx, y + cy, z); //output vertex
+
+    }
+    glEnd();
+}
+
 void ltorladder(GLint a, GLint b, GLint c, GLint d) { // left to right ladder
 	glBegin(GL_QUADS);
 
@@ -219,7 +245,7 @@ void rtolladder(GLint a, GLint b, GLint c, GLint d) { // right to left ladder
 void ladders() // draws ladders
 {
 	GLfloat m;
-	glPointSize(20.0);
+	glPointSize(15.0);
 	glColor3f(0.647, 0.165, 0.165);
 
 	switch (selec)
@@ -309,8 +335,10 @@ player::player(GLfloat p1, GLfloat q1, GLfloat col, GLint tmp, float color_red, 
     this->color_blue = color_blue;
 }
 
-player player_one(boardLeftPos - 40, boardBottomPos + 40, 1, 70, 1.000, 0.412, 0.706);
-player player_two(boardLeftPos - 40, boardBottomPos + 10, 0.5, 70, 0.000, 0.753, 0.796);
+player player_one(boardLeftPos - 40, boardBottomPos + 60, 1, 70, 1.000, 0.412, 0.706);
+player player_two(boardLeftPos - 40, boardBottomPos + 30, 0.5, 70, 0.000, 0.753, 0.796);
+player player_one_representation(165, 615, 1, 70, 1.000, 0.412, 0.706);
+player player_two_representation(165, 615-50, 0.5, 70, 0.000, 0.753, 0.796);
 
 void victory_screen() // Winner Screen
 {
@@ -325,7 +353,6 @@ void victory_screen() // Winner Screen
 		glutBitmapString("PLAYER 2 WINS");
 	glutSwapBuffers();
 }
-
 
 void IR(int)
 {
@@ -395,6 +422,14 @@ void game_screen() // Gameply Screen
     glRasterPos3f(50.0, 700.0, 20.0);
     glutBitmapString("SNAKES & LADDERS");
 
+	// Add bounding box around Title of game
+	glBegin(GL_LINE_LOOP);
+	glVertex3f( 40.0, 730.0, 20.0);
+	glVertex3f( 40.0, 680.0, 20.0);
+	glVertex3f(240.0, 680.0, 20.0);
+	glVertex3f(240.0, 730.0, 20.0);
+	glEnd();
+
 
     // Display Creator
     glRasterPos3f(50.0, 50.0, 20.0);
@@ -409,22 +444,11 @@ void game_screen() // Gameply Screen
 	glutBitmapString("PLAYER 2 : ");
 
 	// Player 1 Icon Display
-	glColor3f(player_one.get_color_red(), player_one.get_color_green(), player_one.get_color_blue());
-	glBegin(GL_QUADS);
-	glVertex3f(165.0, 595.0, 20.0);
-	glVertex3f(175.0, 605.0, 20.0);
-	glVertex3f(165.0, 615.0, 20.0);
-	glVertex3f(155.0, 605.0, 20.0);
-	glEnd();
+	player_one_representation.disp();
 
 	// Player 2 Icon Display
-	glColor3f(player_two.get_color_red(), player_two.get_color_green(), player_two.get_color_blue());
-	glBegin(GL_QUADS);
-	glVertex3f(165.0, 545.0, 20.0);
-	glVertex3f(175.0, 555.0, 20.0);
-	glVertex3f(165.0, 565.0, 20.0);
-	glVertex3f(155.0, 555.0, 20.0);
-	glEnd();
+	player_two_representation.disp();
+
 
 	// Static Image Display Push
 	glPushMatrix();
@@ -604,14 +628,38 @@ void player::check() // Check for special movement
 }
 void player::disp() // Pawn Display
 {
-	//glColor3f(col1, 1.0, 0.0);
+	//Set player color
     glColor3f(this->color_red, this->color_green, this->color_blue);
-	glBegin(GL_POLYGON);
-	glVertex3f(p1, q1, 28);
-	glVertex3f(p2, q2, 28);
-	glVertex3f(p3, q3, 28);
-	glVertex3f(p4, q4, 28);
+
+	//Draw player OLD
+	// glBegin(GL_POLYGON);
+	// glVertex3f(p1, q1, 28);
+	// glVertex3f(p2, q2, 28);
+	// glVertex3f(p3, q3, 28);
+	// glVertex3f(p4, q4, 28);
+	// glEnd();
+
+	//Draw player
+	
+	//Head
+	DrawCircle(p1, q1-3, 5, 100, 28);
+	//Fill Object ------- idk how to fill so this will have to do :(
+	DrawCircle(p1, q1-3, 4, 50, 28);
+	DrawCircle(p1, q1-3, 3, 50, 28);
+	DrawCircle(p1, q1-3, 2, 50, 28);
+	DrawCircle(p1, q1-3, 1, 50, 28);
+	DrawCircle(p1, q1-3, 0, 50, 28);
+
+
+	//Body
+	glBegin(GL_TRIANGLES);
+	glVertex3f(p1, q1 - 5, 28);
+	glVertex3f(p1 - 5, q1 - 20, 28);
+	glVertex3f(p1 + 5, q1 - 20, 28);
 	glEnd();
+
+
+
 	glFlush();
 	glutPostRedisplay();
 }
@@ -762,29 +810,41 @@ void DrawEllipse(float radiusX, float radiusY) // draw snake head
 void Cylinder_draw() // draw snakes
 {
 	// define snake bodies
-	GLfloat xsnake[] = {380, 995, 782, 784}, zsnake[] = {175, 210, 370, 70}, lcarr[] = {0.3, -0.15, 0.30, -0.20, 0.45, -0.15, 0.55, -0.2, 0.70, -0.25, 0.80, -0.35, 0.9};
+	GLfloat 
+		xsnake[] = {380, 995, 782, 784}, 
+		zsnake[] = {175, 210, 370, 70}, 
+		lcarr[] = {0.3, -0.15, 0.30, -0.20, 0.45, -0.15, 0.55, -0.2, 0.70, -0.25, 0.80, -0.35, 0.9};
 	GLfloat i;
-	GLint j, lc = 0, reploop[] = {70, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 25, 70}, snakeLc[] = {13, 7, 6, 5};
+	GLint j, 
+		lc = 0, 
+		reploop[] = {70, 35, 35, 35, 35, 35, 35, 35, 35, 35, 35, 25, 70}, 
+		snakeLc[] = {13, 7, 6, 5};
 	
 	for (j = 0; j < 4; j++) // draw the four snakes
 	{
 		glColor3f(0.196, 0.804, 0.196);
-		glPointSize(20.0);
+		glPointSize(15.0);
 		lc = 0;
+		
+		// glBegin(GL_TRIANGLES);
+		// glVertex3f(xsnake[j] - 10, zsnake[j] - 10, 12);
+		// glVertex3f(xsnake[j], zsnake[j] - 36, 12);
+		// glVertex3f(xsnake[j] + 10, zsnake[j] - 10, 12);
+		// glEnd();
+
 		glBegin(GL_TRIANGLES);
-		glVertex3f(xsnake[j] - 10, zsnake[j] - 10, 12);
-		glVertex3f(xsnake[j], zsnake[j] - 36, 12);
-		glVertex3f(xsnake[j] + 10, zsnake[j] - 10, 12);
+		glVertex3f(xsnake[j] - 7, zsnake[j] - 5, 12);
+		glVertex3f(xsnake[j], zsnake[j] - 30, 12);
+		glVertex3f(xsnake[j] + 7, zsnake[j] - 5, 12);
 		glEnd();
 
-		// snake body
 		while (lc < snakeLc[j])
 		{
 
 			for (i = 0; i < reploop[lc]; i++)
 			{
 				glBegin(GL_POINTS);
-				glVertex3i(xsnake[j]-5, zsnake[j]-5, 12);
+				glVertex3i(xsnake[j], zsnake[j], 12);
 				glEnd();
 				zsnake[j]++;
 				if (j % 2 == 0)
@@ -796,27 +856,6 @@ void Cylinder_draw() // draw snakes
 		}
 
 		// Full snake head with face
-
-		// glPushMatrix();
-		// glTranslatef(xsnake[j], zsnake[j], 18);
-		// glColor3f( 	0.000, 0.000, 0.000);
-		// glPointSize(3.0);
-
-		// glBegin(GL_POINTS);
-		// glVertex3f(-12.5, 7.5, 20);
-		// glVertex3f(12.5, 7.5, 20);
-		// glEnd();
-
-		// glBegin(GL_POLYGON);
-		// glVertex3f(0, -1, 20);
-		// glVertex3f(-4, -13, 20);
-		// glVertex3f(-4, -1, 20);
-		// glVertex3f(4, -1, 20);
-		// glVertex3f(4, -13, 20);
-		// glEnd();
-
-		// DrawEllipse(25, 15);
-		// glPopMatrix();
 
         glPushMatrix();
 		glTranslatef(xsnake[j], zsnake[j], 18);
@@ -924,56 +963,6 @@ void rect() // Board Draw Function
 	}
 }
 
-
-
-// void display1() // Intro Screen
-// {
-// 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-// 	glClearColor(1.0, 1.0, 0.8, 1.0);
-// 	int i;
-// 	// Text Color
-// 	glColor3f(0.333, 0.420, 0.184);
-// 	// Text Position and Name
-// 	glRasterPos3f(400, 700, 10);
-// 	glutBitmapString("SIR M.VISVESVARAYA INSTITUTE OF TECHNOLOGY");
-// 	glRasterPos3f(370, 650, 10);
-// 	glutBitmapString("DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING");
-// 	glRasterPos3f(600, 600, 10);
-// 	glutBitmapString("SNAKE 'N' LADDER");
-// 	glRasterPos3f(200, 400, 10);
-// 	glutBitmapString("USN : 1MV12CS055");
-// 	glRasterPos3f(200, 350, 10);
-// 	glutBitmapString("USN : 1MV12CS052");
-// 	glRasterPos3f(850, 400, 10);
-// 	glutBitmapString("NAME : MOHAMMED IBRAHIM B");
-// 	glRasterPos3f(850, 350, 10);
-// 	glutBitmapString("NAME : MANJUNATH S HORAPETI");
-// 	glRasterPos3f(200, 200, 10);
-// 	glutBitmapString("UNDER THE GUIDANCE OF : Mr.SHANKAR R");
-// 	// "NEXT" button Border
-// 	glColor3f(1.000, 0.000, 0.000);
-// 	glBegin(GL_LINE_LOOP);
-// 	glVertex3f(615.0, 100.0, 10.0);
-// 	glVertex3f(615.0, 140.0, 10.0);
-// 	glVertex3f(710.0, 140.0, 10.0);
-// 	glVertex3f(710.0, 100.0, 10.0);
-// 	glEnd();
-// 	// "NEXT" button Color "Light Grey" Background
-// 	glColor3f(1.000, 0.000, 0.000);
-// 	glBegin(GL_QUADS);
-// 	glVertex3f(615.0, 100.0, 9.0);
-// 	glVertex3f(615.0, 140.0, 9.0);
-// 	glVertex3f(710.0, 140.0, 9.0);
-// 	glVertex3f(710.0, 100.0, 9.0);
-// 	glEnd();
-// 	// "NEXT" button Text
-// 	glColor3f(1.000, 1.000, 0.000);
-// 	glRasterPos3f(630, 110, 10.0);
-// 	glutBitmapString("NEXT");
-// 	glFlush(); // Immediate Render
-// 	glutSwapBuffers();
-// }
-
 void mouse(int btn, int state, int x, int y)
 {
     if (x >= ((1140 * width) / 1367) && x <= ((1260 * width) / 1367) && y <= (((767 - 260) * height) / 767) && y >= (((767 - 340) * height) / 767))
@@ -1007,7 +996,6 @@ void mouse(int btn, int state, int x, int y)
     }
 	// }
 }
-
 void key(unsigned char key, int x, int y)
 {
 	switch (key)
@@ -1016,8 +1004,16 @@ void key(unsigned char key, int x, int y)
 	case 'q':
 		exit(0);
 		break;
+	case 'c': // toggle between different ladder arrangements
+		if (selec == 2) {
+			selec = 0;
+		}
+		else {
+			selec += 1;
+		}
+		cout << selec << endl;
+		break;
 	}
-
 	glutPostRedisplay();
 }
 void myReshape(int w, int h) // glut resize window function
@@ -1031,6 +1027,7 @@ void myReshape(int w, int h) // glut resize window function
 	glMatrixMode(GL_MODELVIEW);
 	glClearColor(1.0, 1.0, 0.8, 1.0);
 }
+
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
