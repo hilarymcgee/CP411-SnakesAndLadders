@@ -592,7 +592,7 @@ pawns::pawns(GLfloat p1, GLfloat q1, GLfloat col, GLint tmp) // Pawn Constructor
 	this->q3 = q1 + 20;
 	this->q4 = q1 + 10;
 	this->col1 = col;
-	oy = q1 - boardBottomPos;
+	oy = q1;
 	this->tmp = tmp;
 }
 void pawns::disp() // Pawn Display
