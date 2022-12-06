@@ -356,28 +356,28 @@ void victory_screen() // Winner Screen
 	glutSwapBuffers();
 }
 
-void IR(int)
+void PawnMove(int)
 {
 	if (alt == 0)
 		player_one.distance(r);
 	else
 		player_two.distance(r);
 }
-void IR2(int a) // Update y of current pawn
+void NextPawnMove(int a) // Update y of current pawn
 {
 	if (alt == 0)
 		player_one.updatey();
 	else
 		player_two.updatey();
 }
-void IR3(int i)
+void PawnMove3(int i)
 {
 	if (alt == 0)
 		player_one.tryy(i);
 	else
 		player_two.tryy(i);
 }
-void IR4(int i)
+void PawnMove4(int i)
 {
 	if (alt == 0)
 		player_one.try2(i);
@@ -565,7 +565,7 @@ void player::tryy(int i) // ?
 		p3 = p1;
 		p4 = p1 + 10;
 		glutPostRedisplay();
-		glutTimerFunc(1, IR3, i);
+		glutTimerFunc(1, PawnMove3, i);
 	}
 	else
 		mt = 1;
@@ -587,7 +587,7 @@ void player::try2(int i) // ?
 			p4 = p1 + 10;
 		}
 		glutPostRedisplay();
-		glutTimerFunc(1, IR4, i);
+		glutTimerFunc(1, PawnMove4, i);
 	}
 	else
 		mt = 1;
@@ -677,7 +677,7 @@ void player::updatey() // Update y of current pawn
 		q3 += speed;
 		q4 += speed;
 		glutPostRedisplay();
-		glutTimerFunc(1, IR2, 0);
+		glutTimerFunc(1, NextPawnMove, 0);
 	}
 	else if (this->t && tmp <= 0)
 	{
@@ -704,14 +704,14 @@ void player::distance(int r)
 			tmp -= speed;
 			p1 += add, p2 += add, p3 += add, p4 += add;
 			glutPostRedisplay();
-			glutTimerFunc(1, IR, 0);
+			glutTimerFunc(1, PawnMove, 0);
 		}
 		else if (this->t && tmp <= 0)
 		{
 			t -= 1;
 			tmp = 70;
 			glutPostRedisplay();
-			glutTimerFunc(1, IR, 0);
+			glutTimerFunc(1, PawnMove, 0);
 		}
 		else if ((p1 + 1) > (1010))
 		{
@@ -739,14 +739,14 @@ void player::distance(int r)
 			tmp -= speed;
 			p1 += add, p2 += add, p3 += add, p4 += add;
 			glutPostRedisplay();
-			glutTimerFunc(1, IR, 1);
+			glutTimerFunc(1, PawnMove, 1);
 		}
 		else if (this->t && tmp <= 0)
 		{
 			t--;
 			tmp = 70;
 			glutPostRedisplay();
-			glutTimerFunc(1, IR, 1);
+			glutTimerFunc(1, PawnMove, 1);
 		}
 		else if ((p1 - 1) < (380))
 		{
