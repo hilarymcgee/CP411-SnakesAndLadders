@@ -345,12 +345,14 @@ void victory_screen() // Winner Screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 1.0, 1.0, 1.0);
 	int i;
-	glColor3f(0.333, 0.420, 0.184);
 	glRasterPos3f(600, 380, 10);
-	if (alt == 0)
+	if (alt == 0) {
+		glColor3f(player_one.get_color_red(), player_one.get_color_green(), player_one.get_color_blue());
 		glutBitmapString("PLAYER 1 WINS");
-	else
+	} else {
+		glColor3f(player_two.get_color_red(), player_two.get_color_green(), player_two.get_color_blue());
 		glutBitmapString("PLAYER 2 WINS");
+	}
 	glutSwapBuffers();
 }
 
@@ -494,7 +496,7 @@ void game_screen() // Gameply Screen
 	Cylinder_draw();
 	glutSwapBuffers();
 }
-int spincube() // Spin the cube
+int  spincube() // Spin the cube
 {
 	theta[0] += 12;
 	if (theta[0] > 360.0)
@@ -685,7 +687,7 @@ void player::updatey() // Update y of current pawn
 	}
 	up = 0;
 }
-void player::init(int r) // Initialize the pawn
+void player::init(int r)
 {
 	this->t = r;
 }
@@ -760,7 +762,7 @@ void player::distance(int r)
 			this->check();
 	}
 }
-int player::check100() // check if pawn is in the last position
+int  player::check100() // check if pawn is in the last position
 {
 	int a = (p1 - 350) / 70;
 	int b = (q1 - 30) / 70;
@@ -782,9 +784,7 @@ int player::check100() // check if pawn is in the last position
 	return 0;
 }
 
-void DrawEllipse(float radiusX, float radiusY) // draw snake head
-{
-	
+void DrawEllipse(float radiusX, float radiusY) {// draw snake head
 	int i;
 
 	// draw snake head ouline
@@ -807,8 +807,7 @@ void DrawEllipse(float radiusX, float radiusY) // draw snake head
 	}
 	glEnd();
 }
-void Cylinder_draw() // draw snakes
-{
+void Cylinder_draw() {// draw snakes
 	// define snake bodies
 	GLfloat 
 		xsnake[] = {380, 995, 782, 784}, 
@@ -826,12 +825,6 @@ void Cylinder_draw() // draw snakes
 		glPointSize(15.0);
 		lc = 0;
 		
-		// glBegin(GL_TRIANGLES);
-		// glVertex3f(xsnake[j] - 10, zsnake[j] - 10, 12);
-		// glVertex3f(xsnake[j], zsnake[j] - 36, 12);
-		// glVertex3f(xsnake[j] + 10, zsnake[j] - 10, 12);
-		// glEnd();
-
 		glBegin(GL_TRIANGLES);
 		glVertex3f(xsnake[j] - 7, zsnake[j] - 5, 12);
 		glVertex3f(xsnake[j], zsnake[j] - 30, 12);
@@ -864,25 +857,33 @@ void Cylinder_draw() // draw snakes
 
         // snake eyes
 		glBegin(GL_POINTS);
-		glVertex3f(-10, 6, 20);
-		glVertex3f(10, 6, 20);
+		glVertex3f(-6, 7, 20);
+		glVertex3f(6, 7, 20);
 		glEnd();
 
         // snake mouth
+		// glBegin(GL_POLYGON);
+		// glVertex3f(0, -1, 20);
+		// glVertex3f(-4, -13, 20);
+		// glVertex3f(-4, -1, 20);
+		// glVertex3f(4, -1, 20);
+		// glVertex3f(4, -13, 20);
+		// glEnd();
+
+		// inverse snake mouth
 		glBegin(GL_POLYGON);
-		glVertex3f(0, -1, 20);
-		glVertex3f(-4, -13, 20);
-		glVertex3f(-4, -1, 20);
-		glVertex3f(4, -1, 20);
-		glVertex3f(4, -13, 20);
+		glVertex3f(0, 16, 20);
+		glVertex3f(-4, 28, 20);
+		glVertex3f(-4, 16, 20);
+		glVertex3f(4, 16, 20);
+		glVertex3f(4, 28, 20);
 		glEnd();
 
-		DrawEllipse(20, 11);
+		DrawEllipse(11, 18);
 		glPopMatrix();
 	}
 }
-void rect() // Board Draw Function
-{
+void rect() {// Board Draw Function
 	// Creates Bounding Array for Tiles
 	int i, j, k;
 	squareRightMax[-1] = boardLeftPos;
@@ -963,8 +964,7 @@ void rect() // Board Draw Function
 	}
 }
 
-void mouse(int btn, int state, int x, int y)
-{
+void mouse(int btn, int state, int x, int y) {
     if (x >= ((1140 * width) / 1367) && x <= ((1260 * width) / 1367) && y <= (((767 - 260) * height) / 767) && y >= (((767 - 340) * height) / 767))
     {
         if (btn == GLUT_LEFT_BUTTON && state == GLUT_DOWN && mt)
@@ -996,8 +996,7 @@ void mouse(int btn, int state, int x, int y)
     }
 	// }
 }
-void key(unsigned char key, int x, int y)
-{
+void key(unsigned char key, int x, int y) {
 	switch (key)
 	{
 	case 27:
@@ -1011,13 +1010,11 @@ void key(unsigned char key, int x, int y)
 		else {
 			selec += 1;
 		}
-		cout << selec << endl;
 		break;
 	}
 	glutPostRedisplay();
 }
-void myReshape(int w, int h) // glut resize window function
-{
+void myReshape(int w, int h) {// glut resize window function
 	width = w;
 	height = h;
 	glViewport(0, 0, w, h);
@@ -1028,8 +1025,7 @@ void myReshape(int w, int h) // glut resize window function
 	glClearColor(1.0, 1.0, 0.8, 1.0);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowPosition(0, 0);
